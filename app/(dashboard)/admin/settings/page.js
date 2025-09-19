@@ -24,67 +24,130 @@ export default function Setting() {
       getData();
     }
   }, []);
+
+
   const handleSubmit = async (values) => {
-    if (!values?.site_logo[0]?.url) {
-      const { data } = await singleImageUpload({
-        image: values?.site_logo[0]?.originFileObj,
-      });
+  // Added safe optional chaining with .length before accessing [0]
+  if (values?.site_logo?.length && !values.site_logo[0]?.url) {
+    const { data } = await singleImageUpload({
+      image: values?.site_logo[0]?.originFileObj,
+    });
+    values.site_logo = data?.image || "";
+  } else {
+    values.site_logo = values?.site_logo?.[0]?.url || "";
+  }
 
-      values.site_logo = data?.image || "";
-    } else {
-      values.site_logo = values?.site_logo[0]?.url || "";
-    }
+  // Same fix for fav_icon
+  if (values?.fav_icon?.length && !values.fav_icon[0]?.url) {
+    const { data } = await singleImageUpload({
+      image: values?.fav_icon[0]?.originFileObj,
+    });
+    values.fav_icon = data?.image || "";
+  } else {
+    values.fav_icon = values?.fav_icon?.[0]?.url || "";
+  }
 
-    if (!values?.fav_icon[0]?.url) {
-      const { data } = await singleImageUpload({
-        image: values?.fav_icon[0]?.originFileObj,
-      });
+  // Same fix for banner_image
+  if (values?.banner_image?.length && !values.banner_image[0]?.url) {
+    const { data } = await singleImageUpload({
+      image: values?.banner_image[0]?.originFileObj,
+    });
+    values.banner_image = data?.image || "";
+  } else {
+    values.banner_image = values?.banner_image?.[0]?.url || "";
+  }
 
-      values.fav_icon = data?.image || "";
-    } else {
-      values.fav_icon = values?.fav_icon[0]?.url || "";
-    }
+  // partner is already mapped safely, no change needed
+  let partnerImages = [];
+  if (values?.partner?.length > 0) {
+    const uploadPromises = values.partner.map(async (file) => {
+      if (!file.url) {
+        const { data } = await singleImageUpload({
+          image: file.originFileObj,
+        });
+        return data?.image || "";
+      }
+      return file.url;
+    });
+    partnerImages = await Promise.all(uploadPromises);
+  }
 
-    if (!values?.banner_image[0]?.url) {
-      const { data } = await singleImageUpload({
-        image: values?.banner_image[0]?.originFileObj,
-      });
-      values.banner_image = data?.image || "";
-    } else {
-      values.banner_image = values?.banner_image[0]?.url || "";
-    }
+  // gallery is already mapped safely, no change needed
+  let galleryImages = [];
+  if (values?.gallery?.length > 0) {
+    const uploadPromises = values.gallery.map(async (file) => {
+      if (!file.url) {
+        const { data } = await singleImageUpload({
+          image: file.originFileObj,
+        });
+        return data?.image || "";
+      }
+      return file.url;
+    });
+    galleryImages = await Promise.all(uploadPromises);
+  }
 
-    let partnerImages = [];
+  // const handleSubmit = async (values) => {
+  //   if (!values?.site_logo[0]?.url) {
+  //     const { data } = await singleImageUpload({
+  //       image: values?.site_logo[0]?.originFileObj,
+  //     });
 
-    if (values?.partner?.length > 0) {
-      const uploadPromises = values.partner.map(async (file) => {
-        if (!file.url) {
-          const { data } = await singleImageUpload({
-            image: file.originFileObj,
-          });
-          return data?.image || "";
-        }
-        return file.url;
-      });
+  //     values.site_logo = data?.image || "";
+  //   } else {
+  //     values.site_logo = values?.site_logo[0]?.url || "";
+  //   }
 
-      partnerImages = await Promise.all(uploadPromises);
-    }
+  //   if (!values?.fav_icon[0]?.url) {
+  //     const { data } = await singleImageUpload({
+  //       image: values?.fav_icon[0]?.originFileObj,
+  //     });
 
-    let galleryImages = [];
+  //     values.fav_icon = data?.image || "";
+  //   } else {
+  //     values.fav_icon = values?.fav_icon[0]?.url || "";
+  //   }
 
-    if (values?.gallery?.length > 0) {
-      const uploadPromises = values.gallery.map(async (file) => {
-        if (!file.url) {
-          const { data } = await singleImageUpload({
-            image: file.originFileObj,
-          });
-          return data?.image || "";
-        }
-        return file.url;
-      });
+  //   if (!values?.banner_image[0]?.url) {
+  //     const { data } = await singleImageUpload({
+  //       image: values?.banner_image[0]?.originFileObj,
+  //     });
+  //     values.banner_image = data?.image || "";
+  //   } else {
+  //     values.banner_image = values?.banner_image[0]?.url || "";
+  //   }
 
-      galleryImages = await Promise.all(uploadPromises);
-    }
+  //   let partnerImages = [];
+
+  //   if (values?.partner?.length > 0) {
+  //     const uploadPromises = values.partner.map(async (file) => {
+  //       if (!file.url) {
+  //         const { data } = await singleImageUpload({
+  //           image: file.originFileObj,
+  //         });
+  //         return data?.image || "";
+  //       }
+  //       return file.url;
+  //     });
+
+  //     partnerImages = await Promise.all(uploadPromises);
+  //   }
+
+  //   let galleryImages = [];
+
+  //   if (values?.gallery?.length > 0) {
+  //     const uploadPromises = values.gallery.map(async (file) => {
+  //       if (!file.url) {
+  //         const { data } = await singleImageUpload({
+  //           image: file.originFileObj,
+  //         });
+  //         return data?.image || "";
+  //       }
+  //       return file.url;
+  //     });
+
+  //     galleryImages = await Promise.all(uploadPromises);
+  //   }
 
 
     const socialMediaLinks = [

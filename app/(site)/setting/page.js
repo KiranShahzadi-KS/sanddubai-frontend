@@ -64,12 +64,21 @@ const Setting = () => {
       NODE_ENV: "prod",
     };
 
+      const token = localStorage.getItem("token");
+
     const { data } = await axios.post(
       process.env.BACKEND_URL + "/api/v1/settings/env-creates",
       {
         valueString,
         adminInfo,
+      },
+
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, //CHANGED
+        },
       }
+
     );
 
     if (data?.status === true && data?.env === true) {
