@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.BACKEND_URL+"/api/v1/";
+const API_URL = process.env.NEXT_PUBLIC_API_URL+"/api/v1/";
 // const API_URL = 'https://api.agency.appstick.com.bd/'+"api/v1/";
 const axiosApi = axios.create({
   baseURL: API_URL,
